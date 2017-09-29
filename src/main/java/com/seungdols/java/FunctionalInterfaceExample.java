@@ -1,5 +1,6 @@
 package com.seungdols.java;
 
+import java.math.BigDecimal;
 import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -89,6 +90,23 @@ public class FunctionalInterfaceExample {
 		println(1, 2, 3, (i1, i2, i3) -> String.valueOf(i1 + i2 + i3));
 		println("Area is ", 12, 20, (message, length, width) -> String.valueOf(message + (length * width)));
 		println(1L, "seungdols", "seungdols0822@gmail.com", (id, name, email) -> "User info : ID=" + id + ",name=" + name + ",email=" + email);
+
+		BigDecimalToCurrency bigDecimalToCurrency = bd -> "$" + bd.toString();
+		System.out.println(bigDecimalToCurrency.toCurrency(new BigDecimal("120.00")));
+
+		final InvalidFunctionalInterface invalidFunctionalInterface = new InvalidFunctionalInterface() {
+			@Override
+			public <T> String mkString(T value) {
+				return value.toString();
+			}
+		};
+
+		System.out.println("anonymous class : " + invalidFunctionalInterface.mkString(123));
+
+		// target method가 제네릭이기 때문에 사용할 수 없음.
+//		final InvalidFunctionalInterface invalidFunctionalInterfaceForlambda = value -> value.toString();
+
+
 	}
 
 	// 엄청 무거운 연산을 하는 메소드라 가정
@@ -133,3 +151,18 @@ public class FunctionalInterfaceExample {
 interface Funtionc3<T1, T2, T3, R> {
 	R apply(T1 t1, T2 t2, T3 t3);
 }
+
+@FunctionalInterface
+interface BigDecimalToCurrency {
+	String toCurrency(BigDecimal value);
+}
+
+/*
+	Method자체에 제네릭 타입이 들어가면 FunctionalInterface가 제대로 동작하지 않는다
+ */
+@FunctionalInterface
+interface InvalidFunctionalInterface{
+	<T> String mkString(T value);
+}
+
+
